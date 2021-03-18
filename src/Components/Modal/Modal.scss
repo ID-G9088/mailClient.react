@@ -1,0 +1,44 @@
+.modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    margin:0 auto;
+    box-sizing: border-box;
+    width:400px;
+    height: 400px;
+    padding:10px;
+    text-align: center;
+    background-color: green;
+
+    p {
+        font-size: 22px;
+    }
+
+    &--first {
+        background: red;
+        border:1px solid pink;
+        border-radius: 15px;
+    }
+
+    &--second {
+        background: yellow;
+        border:1px solid pink;
+        border-radius: 15px;
+    }
+
+    button {
+        background-color: green;
+        border:none;
+        padding: 10px 30px;
+        color:white;
+        border-radius: 5px;
+        margin-right: 50px;
+        outline: none;
+        cursor: pointer;
+    }
+}
