@@ -5,13 +5,13 @@
 
     position: absolute;
     top: 50%;
-    left:50%;
-    transform: translate(-50%,-50%);
-    margin:0 auto;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
     box-sizing: border-box;
-    width:400px;
+    width: 400px;
     height: 400px;
-    padding:10px;
+    padding: 10px;
     text-align: center;
     background-color: green;
 
@@ -21,21 +21,21 @@
 
     &--first {
         background: red;
-        border:1px solid pink;
+        border: 1px solid pink;
         border-radius: 15px;
     }
 
     &--second {
         background: yellow;
-        border:1px solid pink;
+        border: 1px solid pink;
         border-radius: 15px;
     }
 
     button {
         background-color: green;
-        border:none;
+        border: none;
         padding: 10px 30px;
-        color:white;
+        color: white;
         border-radius: 5px;
         margin-right: 50px;
         outline: none;
