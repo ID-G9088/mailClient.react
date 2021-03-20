@@ -1,0 +1,82 @@
+[
+    {
+        "id": 1,
+        "name": " oranges",
+        "price": 2,
+        "img": "./logo192.png",
+        "article": 11,
+        "color": "red"
+    },
+    {
+        "id": 2,
+        "name": " apples",
+        "price": 3,
+        "img": "./logo192.png",
+        "article": 13,
+        "color": "red"
+    },
+    {
+        "id": 3,
+        "name": " watermellon",
+        "price": 5,
+        "img": "./logo192.png",
+        "article": 15,
+        "color": "green red"
+    },
+    {
+        "id": 4,
+        "name": " ranbutan",
+        "price": 7,
+        "img": "./logo192.png",
+        "article": 17,
+        "color": "unknown"
+    },
+    {
+        "id": 5,
+        "name": " mellon",
+        "price": 4,
+        "img": "./logo192.png",
+        "article": 19,
+        "color": "red"
+    },
+    {
+        "id": 6,
+        "name": " kiwi",
+        "price": 3,
+        "img": "./logo192.png",
+        "article": 21,
+        "color": "green"
+    },
+    {
+        "id": 7,
+        "name": " pineapple",
+        "price": 4,
+        "img": "./logo192.png",
+        "article": 23,
+        "color": "black"
+    },
+    {
+        "id": 8,
+        "name": " mandaranis",
+        "price": 2,
+        "img": "./logo192.png",
+        "article": 25,
+        "color": "yellow"
+    },
+    {
+        "id": 9,
+        "name": " mango",
+        "price": 5,
+        "img": "./logo192.png",
+        "article": 27,
+        "color": "blue"
+    },
+    {
+        "id": 10,
+        "name": " bananas",
+        "price": 2,
+        "img": "./logo192.png",
+        "article": 29,
+        "color": "green"
+    }
+]
