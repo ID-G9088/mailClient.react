@@ -1,93 +1,112 @@
 import React from "react";
-import Button from "./Components/Button/Button.js";
-import Modal from "./Components/Modal/Modal.js";
 import "./App.css";
 import axios from "axios";
-import Loading from "./Components/Loading/Loading.js";
-import ProductList from "./Components/ProductList/ProductList.js";
-import ProductItem from "./Components/ProductItem/ProductItem.js";
+import Loading from "./components/Loading/Loading";
+import ProductList from "./components/ProductList/ProductList";
+import Favorite from "./components/Favorite/Favorite";
+import Cart from "./components/Cart/Cart";
+import Modal from "./components/Modal/Modal";
+import Button from "./components/Button/Button";
 
 class App extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            isShown1: false,
-            isShown2: false,
-            products: [],
-            isLoading: true,
-        };
+  constructor() {
+    super();
+    this.state = {
+      products: [],
+      cartList: [],
+      isLoading: true,
+      addToCartModal: false,
+      modalInfo: {
+        id: "",
+      },
+    };
+  }
+
+  normalizeData = (data) => {
+    return data.map((el) => {
+      el.isFavorite = false;
+      return el;
+    });
+  };
+
+  toggleFavorite = (id) => {
+    const newArray = this.state.products.map((el) => {
+      if (el.id === id) {
+        el.isFavorite = !el.isFavorite;
+      }
+      return el;
+    });
+    this.setState({ products: newArray });
+  };
+
+  componentDidMount() {
+    axios("/products.json").then((response) => {
+      const array = this.normalizeData(response.data);
+      this.updateProducts(response.data);
+      this.setState({ isLoading: !this.state.isLoading });
+    });
+  }
+
+  updateProducts = (data) => {
+    this.setState({ products: data });
+  };
+
+  deleteFromCart = (id) => {
+    const { cartList } = this.state;
+    const newArrray = cartList.filter((el) => el.id !== id);
+    this.setState({ cartList: newArrray });
+  };
+
+  openAddToCart = (id) => {
+    this.setState({ addToCartModal: !this.state.addToCartModal });
+    this.updateModal(id);
+  };
+
+  addToCart = () => {
+    const { cartList, products, modalInfo } = this.state;
+    let newArray;
+    const item = products.find((el) => el.id === modalInfo.id);
+    newArray = [...cartList, item];
+    this.setState({ cartList: newArray });
+    this.setState({ addToCartModal: !this.state.addToCartModal });
+  };
+
+  updateModal = (id) => {
+    this.setState({ modalInfo: { ...this.state.modalInfo, id: id } });
+  };
+
+  render() {
+    const { isLoading, products, cartList, addToCartModal } = this.state;
+
+    if (isLoading) {
+      return <Loading />;
     }
 
-    openModal1 = () => {
-        this.setState({ isShown1: !this.state.isShown1 });
-    };
-
-    openModal2 = () => {
-        this.setState({ isShown2: !this.state.isShown2 });
-    };
-
-    componentDidMount() {
-        axios("./products.json").then((response) => {
-            this.updateProducts(response.data);
-            this.setState({ isLoading: !this.state.isLoading });
-            console.log(this.state.products);
-        });
-    }
-
-    updateProducts = (data) => {
-        this.setState({ products: data });
-    };
-
-    render() {
-        const { isShown1, isShown2, isLoading, products } = this.state;
-
-        if (isLoading) {
-            return <Loading />;
-        }
-
-        return (
-            <div className="App">
-                {isShown1 && (
-                    <Modal
-                        onClick={this.openModal1}
-                        className="modal modal--first"
-                        actions={{
-                            cancel: () => {
-                                return <Button text="CANCEL" />;
-                            },
-                            ok: () => {
-                                return <Button text="OK" />;
-                            },
-                        }}
-                        closeButton={true}
-                        header="First modal header"
-                        text="FIRST MODAL TEXT"
-                    />
-                )}
-                {isShown2 && (
-                    <Modal
-                        onClick={this.openModal2}
-                        className="modal modal--second"
-                        actions={{
-                            cancel: () => {
-                                return <Button text="CANCEL" />;
-                            },
-                            ok: () => {
-                                return <Button text="OK" />;
-                            },
-                        }}
-                        closeButton={false}
-                        header="Second modal header"
-                        text="SECOND MODAL TEXT"
-                    />
-                )}
-                <Button onClick={this.openModal1} text="First modal window" style={{ backgroundColor: "red", padding: "10px 20px", marginBottom: "20px" }} />
-                <Button onClick={this.openModal2} text="Second modal window" style={{ backgroundColor: "yellow", padding: "10px 20px" }} />
-
-                <ProductList products={products} />
-            </div>
-        );
-    }
+    return (
+      <div className="App">
+        <ProductList updateModal={this.updateModal} openAddToCart={this.openAddToCart} cartList={cartList} toggleFavorite={this.toggleFavorite} products={products} />
+        <Favorite products={products} deleteFavorite={this.toggleFavorite} />
+        <Cart products={cartList} deleteFromCart={this.deleteFromCart} />
+        {addToCartModal && (
+          <Modal
+            onClick={this.openAddToCart}
+            className="modal modal--first"
+            actions={{
+              cancel: () => {
+                return <Button text="CANCEL" onClick={this.openAddToCart} />;
+              },
+              ok: () => {
+                return <Button text="OK" onClick={this.addToCart} />;
+              },
+            }}
+            header="Adding to cart"
+            text="Do you what to add this item to cart ?"
+            closeButton={true}
+          />
+        )}
+      </div>
+    );
+  }
 }
 
 export default App;
