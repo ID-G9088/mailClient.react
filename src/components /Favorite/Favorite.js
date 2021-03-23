@@ -12,8 +12,8 @@ export default class Favorite extends Component {
           .filter((el) => el.isFavorite)
           .map((el) => {
             return (
-              <li>
-                Name: {el.name}, price: {el.price} $.
+              <li key={el.id}>
+                Name: {el.name}, price: {el.price} $, id: {el.id}.
                 <Button text="X" onClick={() => deleteFavorite(el.id)} />
               </li>
             );
@@ -25,6 +25,6 @@ export default class Favorite extends Component {
 
 Favorite.propTypes = {
   products: propTypes.array,
-  item: propTypes.object.isRequired,
+  item: propTypes.object,
   deleteFavorite: propTypes.func,
 };

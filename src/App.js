@@ -13,7 +13,7 @@ class App extends React.Component {
     super();
     this.state = {
       products: [],
-      cartList: [],
+      cartList: JSON.parse(localStorage.getItem("savedToCart")) || [],
       isLoading: true,
       addToCartModal: false,
       modalInfo: {
@@ -24,25 +24,29 @@ class App extends React.Component {
 
   normalizeData = (data) => {
     return data.map((el) => {
-      el.isFavorite = false;
-      return el;
+      const favoriteValue = JSON.parse(localStorage.getItem("savedToFavorite")) || [];
+      return { ...el, isFavorite: favoriteValue.includes(el.id) };
     });
   };
 
   toggleFavorite = (id) => {
-    const newArray = this.state.products.map((el) => {
-      if (el.id === id) {
-        el.isFavorite = !el.isFavorite;
-      }
-      return el;
+    const addedToFavorite = this.state.products.map((el) => {
+      return el.id === id ? { ...el, isFavorite: !el.isFavorite } : el;
     });
-    this.setState({ products: newArray });
+    this.setState({ products: addedToFavorite });
+    const favoriteLocalArray = addedToFavorite.filter((el) => el.isFavorite).map((el) => el.id);
+    this.addFavoriteToLocalStorage(favoriteLocalArray);
+  };
+
+  addFavoriteToLocalStorage = (data) => {
+    localStorage.setItem("savedToFavorite", JSON.stringify(data));
   };
 
   componentDidMount() {
     axios("/products.json").then((response) => {
-      const array = this.normalizeData(response.data);
-      this.updateProducts(response.data);
+      const normalizedData = this.normalizeData(response.data);
+      this.updateProducts(normalizedData);
+
       this.setState({ isLoading: !this.state.isLoading });
     });
   }
@@ -55,6 +59,7 @@ class App extends React.Component {
     const { cartList } = this.state;
     const newArrray = cartList.filter((el) => el.id !== id);
     this.setState({ cartList: newArrray });
+    this.addedToCartLocalStorage(newArrray);
   };
 
   openAddToCart = (id) => {
@@ -64,11 +69,15 @@ class App extends React.Component {
 
   addToCart = () => {
     const { cartList, products, modalInfo } = this.state;
-    let newArray;
     const item = products.find((el) => el.id === modalInfo.id);
-    newArray = [...cartList, item];
-    this.setState({ cartList: newArray });
+    const addedToCart = [...cartList, item];
+    this.setState({ cartList: addedToCart });
     this.setState({ addToCartModal: !this.state.addToCartModal });
+    this.addedToCartLocalStorage(addedToCart);
+  };
+
+  addedToCartLocalStorage = (data) => {
+    localStorage.setItem("savedToCart", JSON.stringify(data));
   };
 
   updateModal = (id) => {

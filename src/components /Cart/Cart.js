@@ -8,10 +8,10 @@ export default class Cart extends Component {
       <div>
         CART:
         <ol>
-          {products.map((el) => {
+          {products.map((el, index) => {
             return (
-              <li>
-                Name: {el.name}, price: {el.price} $.
+              <li key={index}>
+                Name: {el.name}, price: {el.price} $, id: {el.id}.
                 <Button
                   text="X"
                   onClick={() => {

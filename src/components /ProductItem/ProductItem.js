@@ -29,5 +29,5 @@ ProductItem.defaultProps = {
 ProductItem.propTypes = {
   item: propTypes.object.isRequired,
   favoriteList: propTypes.array,
-  updateFavorite: propTypes.func.isRequired,
+  updateFavorite: propTypes.func,
 };
