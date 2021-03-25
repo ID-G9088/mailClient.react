@@ -29,13 +29,21 @@ class App extends React.Component {
     });
   };
 
+  favoriteIdArray = (data) => {
+    const favoriteLocalArray = data.filter((el) => el.isFavorite).map((el) => el.id);
+    return favoriteLocalArray;
+  };
+
   toggleFavorite = (id) => {
     const addedToFavorite = this.state.products.map((el) => {
       return el.id === id ? { ...el, isFavorite: !el.isFavorite } : el;
     });
-    this.setState({ products: addedToFavorite });
-    const favoriteLocalArray = addedToFavorite.filter((el) => el.isFavorite).map((el) => el.id);
-    this.addFavoriteToLocalStorage(favoriteLocalArray);
+    this.updateProducts(addedToFavorite);
+    this.addFavoriteToLocalStorage(this.favoriteIdArray(addedToFavorite));
+  };
+
+  toggleLoading = () => {
+    this.setState({ isLoading: !this.state.isLoading });
   };
 
   addFavoriteToLocalStorage = (data) => {
@@ -46,8 +54,7 @@ class App extends React.Component {
     axios("/products.json").then((response) => {
       const normalizedData = this.normalizeData(response.data);
       this.updateProducts(normalizedData);
-
-      this.setState({ isLoading: !this.state.isLoading });
+      this.toggleLoading();
     });
   }
 
@@ -55,10 +62,14 @@ class App extends React.Component {
     this.setState({ products: data });
   };
 
+  updatecartList = (data) => {
+    this.setState({ cartList: data });
+  };
+
   deleteFromCart = (id) => {
     const { cartList } = this.state;
     const newArrray = cartList.filter((el) => el.id !== id);
-    this.setState({ cartList: newArrray });
+    this.updatecartList(newArrray);
     this.addedToCartLocalStorage(newArrray);
   };
 
@@ -71,7 +82,7 @@ class App extends React.Component {
     const { cartList, products, modalInfo } = this.state;
     const item = products.find((el) => el.id === modalInfo.id);
     const addedToCart = [...cartList, item];
-    this.setState({ cartList: addedToCart });
+    this.updatecartList(addedToCart);
     this.setState({ addToCartModal: !this.state.addToCartModal });
     this.addedToCartLocalStorage(addedToCart);
   };
@@ -93,7 +104,7 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <ProductList updateModal={this.updateModal} openAddToCart={this.openAddToCart} cartList={cartList} toggleFavorite={this.toggleFavorite} products={products} />
+        <ProductList updateModal={this.updateModal} openAddToCart={this.openAddToCart} toggleFavorite={this.toggleFavorite} products={products} />
         <Favorite products={products} deleteFavorite={this.toggleFavorite} />
         <Cart products={cartList} deleteFromCart={this.deleteFromCart} />
         {addToCartModal && (

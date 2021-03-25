@@ -6,16 +6,14 @@ import propTypes from "prop-types";
 
 export default class ProductList extends Component {
   render() {
-    const { products, toggleFavorite, cartList, openAddToCart, updateModal } = this.props;
+    const { products, toggleFavorite, openAddToCart, updateModal } = this.props;
 
     return (
       <div>
         <div className="productList">
           <ol>
             {products.map((el) => {
-              return (
-                <ProductItem openAddToCart={openAddToCart} cartList={cartList} toggleFavorite={toggleFavorite} key={el.id} item={el} updateFavorite={this.updateFavorite} updateModal={updateModal} />
-              );
+              return <ProductItem openAddToCart={openAddToCart} toggleFavorite={toggleFavorite} key={el.id} item={el} updateFavorite={this.updateFavorite} updateModal={updateModal} />;
             })}
           </ol>
         </div>
