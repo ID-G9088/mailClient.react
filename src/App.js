@@ -73,8 +73,12 @@ class App extends React.Component {
     this.addedToCartLocalStorage(newArrray);
   };
 
-  openAddToCart = (id) => {
+  toggleCartModal = () => {
     this.setState({ addToCartModal: !this.state.addToCartModal });
+  };
+
+  openAddToCart = (id) => {
+    this.toggleCartModal();
     this.updateModal(id);
   };
 
@@ -83,7 +87,7 @@ class App extends React.Component {
     const item = products.find((el) => el.id === modalInfo.id);
     const addedToCart = [...cartList, item];
     this.updatecartList(addedToCart);
-    this.setState({ addToCartModal: !this.state.addToCartModal });
+    this.toggleCartModal();
     this.addedToCartLocalStorage(addedToCart);
   };
 
