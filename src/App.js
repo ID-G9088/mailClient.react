@@ -1,136 +1,112 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 import Loading from "./components/Loading/Loading";
-import ProductList from "./components/ProductList/ProductList";
-import Favorite from "./components/Favorite/Favorite";
-import Cart from "./components/Cart/Cart";
-import Modal from "./components/Modal/Modal";
-import Button from "./components/Button/Button";
+import Navigation from "./components/Navigation/Navigation";
+import AppRoutes from "./routes/AppRoutes";
 
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      products: [],
-      cartList: JSON.parse(localStorage.getItem("savedToCart")) || [],
-      isLoading: true,
-      addToCartModal: false,
-      modalInfo: {
-        id: "",
-      },
-    };
-  }
+const App = () => {
+  const [products, setProducts] = useState([]);
+  const [cartList, setCartList] = useState(JSON.parse(localStorage.getItem("savedToCart")) || []);
+  const [isLoading, setIsLoading] = useState(true);
+  const [addToCartModal, setAddToCartModal] = useState(false);
+  const [modalInfo, setModalInfo] = useState({ id: "" });
 
-  normalizeData = (data) => {
+  useEffect(() => {
+    axios("/products.json").then((response) => {
+      const normalizedData = normalizeData(response.data);
+      updateProducts(normalizedData);
+      toggleLoading();
+    });
+  }, []);
+
+  const normalizeData = (data) => {
     return data.map((el) => {
       const favoriteValue = JSON.parse(localStorage.getItem("savedToFavorite")) || [];
       return { ...el, isFavorite: favoriteValue.includes(el.id) };
     });
   };
 
-  favoriteIdArray = (data) => {
+  const favoriteIdArray = (data) => {
     const favoriteLocalArray = data.filter((el) => el.isFavorite).map((el) => el.id);
     return favoriteLocalArray;
   };
 
-  toggleFavorite = (id) => {
-    const addedToFavorite = this.state.products.map((el) => {
+  const toggleFavorite = (id) => {
+    const addedToFavorite = products.map((el) => {
       return el.id === id ? { ...el, isFavorite: !el.isFavorite } : el;
     });
-    this.updateProducts(addedToFavorite);
-    this.addFavoriteToLocalStorage(this.favoriteIdArray(addedToFavorite));
+    updateProducts(addedToFavorite);
+    addFavoriteToLocalStorage(favoriteIdArray(addedToFavorite));
   };
 
-  toggleLoading = () => {
-    this.setState({ isLoading: !this.state.isLoading });
+  const toggleLoading = () => {
+    setIsLoading(!isLoading);
   };
 
-  addFavoriteToLocalStorage = (data) => {
+  const addFavoriteToLocalStorage = (data) => {
     localStorage.setItem("savedToFavorite", JSON.stringify(data));
   };
 
-  componentDidMount() {
-    axios("/products.json").then((response) => {
-      const normalizedData = this.normalizeData(response.data);
-      this.updateProducts(normalizedData);
-      this.toggleLoading();
-    });
-  }
-
-  updateProducts = (data) => {
-    this.setState({ products: data });
+  const updateProducts = (data) => {
+    setProducts(data);
   };
 
-  updatecartList = (data) => {
-    this.setState({ cartList: data });
+  const updatecartList = (data) => {
+    setCartList(data);
   };
 
-  deleteFromCart = (id) => {
-    const { cartList } = this.state;
+  const deleteFromCart = (id) => {
     const newArrray = cartList.filter((el) => el.id !== id);
-    this.updatecartList(newArrray);
-    this.addedToCartLocalStorage(newArrray);
+    updatecartList(newArrray);
+    addedToCartLocalStorage(newArrray);
   };
 
-  toggleCartModal = () => {
-    this.setState({ addToCartModal: !this.state.addToCartModal });
+  const toggleCartModal = () => {
+    setAddToCartModal(!addToCartModal);
   };
 
-  openAddToCart = (id) => {
-    this.toggleCartModal();
-    this.updateModal(id);
+  const openAddToCart = (id) => {
+    toggleCartModal();
+    updateModal(id);
   };
 
-  addToCart = () => {
-    const { cartList, products, modalInfo } = this.state;
+  const addToCart = () => {
     const item = products.find((el) => el.id === modalInfo.id);
     const addedToCart = [...cartList, item];
-    this.updatecartList(addedToCart);
-    this.toggleCartModal();
-    this.addedToCartLocalStorage(addedToCart);
+    updatecartList(addedToCart);
+    toggleCartModal();
+    addedToCartLocalStorage(addedToCart);
   };
 
-  addedToCartLocalStorage = (data) => {
+  const addedToCartLocalStorage = (data) => {
     localStorage.setItem("savedToCart", JSON.stringify(data));
   };
 
-  updateModal = (id) => {
-    this.setState({ modalInfo: { ...this.state.modalInfo, id: id } });
+  const updateModal = (id) => {
+    setModalInfo({ ...modalInfo, id: id });
   };
 
-  render() {
-    const { isLoading, products, cartList, addToCartModal } = this.state;
-
-    if (isLoading) {
-      return <Loading />;
-    }
-
-    return (
-      <div className="App">
-        <ProductList updateModal={this.updateModal} openAddToCart={this.openAddToCart} toggleFavorite={this.toggleFavorite} products={products} />
-        <Favorite products={products} deleteFavorite={this.toggleFavorite} />
-        <Cart products={cartList} deleteFromCart={this.deleteFromCart} />
-        {addToCartModal && (
-          <Modal
-            onClick={this.openAddToCart}
-            className="modal modal--first"
-            actions={{
-              cancel: () => {
-                return <Button text="CANCEL" onClick={this.openAddToCart} />;
-              },
-              ok: () => {
-                return <Button text="OK" onClick={this.addToCart} />;
-              },
-            }}
-            header="Adding to cart"
-            text="Do you what to add this item to cart ?"
-            closeButton={true}
-          />
-        )}
-      </div>
-    );
+  if (isLoading) {
+    return <Loading />;
   }
-}
+
+  return (
+    <div className="App">
+      <Navigation productsCart={cartList} />
+      <AppRoutes
+        products={products}
+        toggleFavorite={toggleFavorite}
+        productsCart={cartList}
+        deleteFromCart={deleteFromCart}
+        updateModal={updateModal}
+        openAddToCart={openAddToCart}
+        addToCartModal={addToCartModal}
+        addToCart={addToCart}
+        modalInfo={modalInfo}
+      />
+    </div>
+  );
+};
 
 export default App;

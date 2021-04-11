@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import { star } from "../../themes/Icons/star";
 
-export default class Icon extends Component {
-  render() {
-    const { color, onClick, filled } = this.props;
+const Icon = (props) => {
+  const { color, onClick, filled } = props;
+  return <span onClick={onClick}>{star(color, filled)}</span>;
+};
 
-    return <span onClick={onClick}>{star(color, filled)}</span>;
-  }
-}
+export default Icon;
