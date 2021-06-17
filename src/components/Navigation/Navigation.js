@@ -1,9 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
+import { getCartList } from "../../store/selectors";
 import "./Navigation.scss";
 
-const Navigation = (props) => {
-  const { productsCart } = props;
+const Navigation = () => {
+  const productsCart = useSelector(getCartList);
 
   return (
     <div className="navigation">

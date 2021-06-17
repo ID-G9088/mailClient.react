@@ -1,9 +1,32 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
+import { getAddToCartModal, getCartList, getModalInfo } from "../../store/selectors";
+import { DELETE_FROM_CART, OPEN_MODAL_CART } from "../../store/types";
 
-const Cart = (props) => {
-  const { productsCart, deleteFromCart, addToCart, openAddToCart, addToCartModal, modalInfo } = props;
+const Cart = () => {
+  const dispatch = useDispatch();
+  const productsCart = useSelector(getCartList);
+  const addToCartModal = useSelector(getAddToCartModal);
+  const cartList = useSelector(getCartList);
+  const modalInfo = useSelector(getModalInfo);
+
+  const deleteFromCart = (id) => {
+    const newArrray = cartList.filter((el) => el.id !== id);
+    dispatch({ type: DELETE_FROM_CART, payload: newArrray });
+    addedToCartLocalStorage(newArrray);
+  };
+
+  const addedToCartLocalStorage = (data) => {
+    localStorage.setItem("savedToCart", JSON.stringify(data));
+  };
+
+  const openAddToCart = (id) => {
+    dispatch({ type: OPEN_MODAL_CART, payload: id });
+  };
+
   return (
     <div>
       CART:
@@ -17,7 +40,7 @@ const Cart = (props) => {
                   className="modal modal--first"
                   actions={{
                     cancel: () => {
-                      return <Button text="Cancel" onClick={openAddToCart} />;
+                      return <Button text="Cancel" onClick={() => openAddToCart()} />;
                     },
                     ok: () => {
                       return (
@@ -25,7 +48,7 @@ const Cart = (props) => {
                           text="Confirm"
                           onClick={() => {
                             deleteFromCart(modalInfo.id);
-                            console.log(el.id);
+                            console.log(el.id, modalInfo.id);
                             openAddToCart();
                           }}
                         />
@@ -37,13 +60,7 @@ const Cart = (props) => {
                   closeButton={false}
                 />
               )}
-              <Button
-                text="X"
-                onClick={() => {
-                  openAddToCart(el.id);
-                  console.log(el.id);
-                }}
-              />
+              <Button text="X" onClick={() => openAddToCart(el.id)} />
             </li>
           );
         })}
