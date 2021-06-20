@@ -7,31 +7,22 @@ import propTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../../store/operations";
 import Loading from "../Loading/Loading";
-import { getLoading, getProductsList, getCartList, getAddToCartModal, getModalInfo } from "../../store/selectors";
+import { getLoading, getProductsList, getAddToCartModal } from "../../store/selectors";
 import { setCartList } from "../../store/actions";
-import { OPEN_MODAL_CART } from "../../store/types";
+import { TOGGLE_MODAL_CART } from "../../store/types";
 
 const ProductList = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector(getLoading);
   const products = useSelector(getProductsList);
-  const cartList = useSelector(getCartList);
   const addToCartModal = useSelector(getAddToCartModal);
-  const modalInfo = useSelector(getModalInfo);
 
   const addToCart = () => {
-    const item = products.find((el) => el.id === modalInfo.id);
-    const addedToCart = [...cartList, item];
-    dispatch(setCartList(addedToCart));
-    addedToCartLocalStorage(addedToCart);
+    dispatch(setCartList());
   };
 
   const openAddToCart = (id) => {
-    dispatch({ type: OPEN_MODAL_CART, payload: id });
-  };
-
-  const addedToCartLocalStorage = (data) => {
-    localStorage.setItem("savedToCart", JSON.stringify(data));
+    dispatch({ type: TOGGLE_MODAL_CART, payload: id });
   };
 
   useEffect(() => {

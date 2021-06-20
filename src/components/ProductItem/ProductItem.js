@@ -4,7 +4,7 @@ import Icon from "../Icon/Icon";
 import propTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductsList } from "../../store/selectors";
-import { OPEN_MODAL_CART, TOGGLE_FAVORITE } from "../../store/types";
+import { TOGGLE_MODAL_CART, TOGGLE_FAVORITE } from "../../store/types";
 
 const ProductItem = (props) => {
   const { item } = props;
@@ -14,24 +14,11 @@ const ProductItem = (props) => {
   const products = useSelector(getProductsList);
 
   const openAddToCart = (id) => {
-    dispatch({ type: OPEN_MODAL_CART, payload: id });
-  };
-
-  const favoriteIdArray = (data) => {
-    const favoriteLocalArray = data.filter((el) => el.isFavorite).map((el) => el.id);
-    return favoriteLocalArray;
+    dispatch({ type: TOGGLE_MODAL_CART, payload: id });
   };
 
   const toggleFavorite = (id) => {
-    const addedToFavorite = products.map((el) => {
-      return el.id === id ? { ...el, isFavorite: !el.isFavorite } : el;
-    });
-    dispatch({ type: TOGGLE_FAVORITE, payload: addedToFavorite });
-    addFavoriteToLocalStorage(favoriteIdArray(addedToFavorite));
-  };
-
-  const addFavoriteToLocalStorage = (data) => {
-    localStorage.setItem("savedToFavorite", JSON.stringify(data));
+    dispatch({ type: TOGGLE_FAVORITE, payload: id });
   };
 
   return (

@@ -4,27 +4,20 @@ import { useSelector } from "react-redux";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
 import { getAddToCartModal, getCartList, getModalInfo } from "../../store/selectors";
-import { DELETE_FROM_CART, OPEN_MODAL_CART } from "../../store/types";
+import { DELETE_FROM_CART, TOGGLE_MODAL_CART } from "../../store/types";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const productsCart = useSelector(getCartList);
   const addToCartModal = useSelector(getAddToCartModal);
-  const cartList = useSelector(getCartList);
   const modalInfo = useSelector(getModalInfo);
 
   const deleteFromCart = (id) => {
-    const newArrray = cartList.filter((el) => el.id !== id);
-    dispatch({ type: DELETE_FROM_CART, payload: newArrray });
-    addedToCartLocalStorage(newArrray);
-  };
-
-  const addedToCartLocalStorage = (data) => {
-    localStorage.setItem("savedToCart", JSON.stringify(data));
+    dispatch({ type: DELETE_FROM_CART, payload: id });
   };
 
   const openAddToCart = (id) => {
-    dispatch({ type: OPEN_MODAL_CART, payload: id });
+    dispatch({ type: TOGGLE_MODAL_CART, payload: id });
   };
 
   return (

@@ -10,21 +10,8 @@ const Favorite = (props) => {
   const dispatch = useDispatch();
   const products = useSelector(getProductsList);
 
-  const favoriteIdArray = (data) => {
-    const favoriteLocalArray = data.filter((el) => el.isFavorite).map((el) => el.id);
-    return favoriteLocalArray;
-  };
-
   const toggleFavorite = (id) => {
-    const addedToFavorite = products.map((el) => {
-      return el.id === id ? { ...el, isFavorite: !el.isFavorite } : el;
-    });
-    dispatch({ type: TOGGLE_FAVORITE, payload: addedToFavorite });
-    addFavoriteToLocalStorage(favoriteIdArray(addedToFavorite));
-  };
-
-  const addFavoriteToLocalStorage = (data) => {
-    localStorage.setItem("savedToFavorite", JSON.stringify(data));
+    dispatch({ type: TOGGLE_FAVORITE, payload: id });
   };
 
   return (
