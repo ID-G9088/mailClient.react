@@ -10,3 +10,7 @@ export const favoriteIdArray = (data) => {
   const favoriteLocalArray = data.filter((el) => el.isFavorite).map((el) => el.id);
   return favoriteLocalArray;
 };
+
+export const clearLocalStorage = () => {
+  localStorage.removeItem("savedToCart");
+};

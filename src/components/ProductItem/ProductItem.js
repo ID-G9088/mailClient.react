@@ -2,16 +2,13 @@ import React from "react";
 import Button from "../Button/Button";
 import Icon from "../Icon/Icon";
 import propTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
-import { getProductsList } from "../../store/selectors";
+import { useDispatch } from "react-redux";
 import { TOGGLE_MODAL_CART, TOGGLE_FAVORITE } from "../../store/types";
 
 const ProductItem = (props) => {
   const { item } = props;
 
   const dispatch = useDispatch();
-
-  const products = useSelector(getProductsList);
 
   const openAddToCart = (id) => {
     dispatch({ type: TOGGLE_MODAL_CART, payload: id });

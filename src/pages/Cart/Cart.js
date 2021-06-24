@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Button from "../../components/Button/Button";
+import Checkout from "../../components/Checkout/Checkout";
 import Modal from "../../components/Modal/Modal";
 import { getAddToCartModal, getCartList, getModalInfo } from "../../store/selectors";
 import { DELETE_FROM_CART, TOGGLE_MODAL_CART } from "../../store/types";
@@ -58,6 +59,7 @@ const Cart = () => {
           );
         })}
       </ol>
+      <Checkout />
     </div>
   );
 };
