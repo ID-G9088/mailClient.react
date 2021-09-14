@@ -1,0 +1,15 @@
+.navigation {
+  background-color: lightgray;
+
+  &__list {
+    display: flex;
+    justify-content: space-around;
+    color: blueviolet;
+  }
+
+  &__item {
+    padding: 20px;
+    color: blueviolet;
+    text-decoration: none;
+  }
+}
